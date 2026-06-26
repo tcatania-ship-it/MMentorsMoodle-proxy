@@ -20,18 +20,25 @@
   const params = new URLSearchParams(location.search);
   const id = params.get('v');
   if (!id) { document.body.innerHTML = '<div style="color:#fff;padding:20px">Missing ?v=VIDEO_ID</div>'; return; }
-  const start = params.get('start') || '';
+
+  // Read an optional ?host=nocookie flag so you can A/B test
+  const useNoCookie = params.get('host') === 'nocookie';
+  const ytHost = useNoCookie
+    ? 'https://www.youtube-nocookie.com'
+    : 'https://www.youtube.com';   // default — fixes unlisted
+
   const q = new URLSearchParams({
     autoplay: params.get('autoplay') || '0',
     controls: '1',
     rel: '0',
     playsinline: '1',
     enablejsapi: '1',
-    origin: location.origin   // tells YT the embedder is THIS https origin
+    origin: location.origin
   });
-  if (start) q.set('start', start);
+  if (params.get('start')) q.set('start', params.get('start'));
+
   document.getElementById('player').src =
-    'https://www.youtube-nocookie.com/embed/' + encodeURIComponent(id) + '?' + q.toString();
+    ytHost + '/embed/' + encodeURIComponent(id) + '?' + q.toString();
 })();
 </script>
 </body>
