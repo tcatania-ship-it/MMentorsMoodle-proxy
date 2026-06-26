@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<meta name="referrer" content="strict-origin-when-cross-origin">
+<title>Video</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  html, body { width: 100%; height: 100%; overflow: hidden; background: #000; }
+  #player { position: absolute; top: 0; left: 0; width: 100%; height: 100%; border: 0; }
+</style>
+</head>
+<body>
+<iframe id="player" allowfullscreen
+  allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+  referrerpolicy="strict-origin-when-cross-origin"></iframe>
+<script>
+(function() {
+  const params = new URLSearchParams(location.search);
+  const id = params.get('v');
+  if (!id) { document.body.innerHTML = '<div style="color:#fff;padding:20px">Missing ?v=VIDEO_ID</div>'; return; }
+  const start = params.get('start') || '';
+  const q = new URLSearchParams({
+    autoplay: params.get('autoplay') || '0',
+    controls: '1',
+    rel: '0',
+    playsinline: '1',
+    enablejsapi: '1',
+    origin: location.origin   // tells YT the embedder is THIS https origin
+  });
+  if (start) q.set('start', start);
+  document.getElementById('player').src =
+    'https://www.youtube-nocookie.com/embed/' + encodeURIComponent(id) + '?' + q.toString();
+})();
+</script>
+</body>
+</html>
